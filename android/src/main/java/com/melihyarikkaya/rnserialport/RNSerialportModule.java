@@ -50,8 +50,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.primitives.UnsignedBytes;
-
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
@@ -69,6 +67,12 @@ public class RNSerialportModule extends ReactContextBaseJavaModule implements Li
     private final ConcurrentHashMap<String, Network> mNetworkMap = new ConcurrentHashMap<>();
     private final CurrentNetwork currentNetwork = new CurrentNetwork();
     private final ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
+
+  // ref to
+  // https://github.com/google/guava/blob/6405852bbf453b14d097b8ec3bcae494334b357d/android/guava/src/com/google/common/primitives/UnsignedBytes.java
+  private static int unsignedByteToInt(byte value) {
+      return value & 0xFF;
+  }
 
   public RNSerialportModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -697,7 +701,7 @@ public class RNSerialportModule extends ReactContextBaseJavaModule implements Li
               if(returnedDataType == Definitions.RETURNED_DATA_TYPE_INTARRAY) {
                 WritableArray intArray = new WritableNativeArray();
                 for(byte b: bytes) {
-                  intArray.pushInt(UnsignedBytes.toInt(b));
+                  intArray.pushInt(unsignedByteToInt(b));
                 }
                 params.putArray(payloadKey, intArray);
               } else if(returnedDataType == Definitions.RETURNED_DATA_TYPE_HEXSTRING) {
