@@ -372,6 +372,8 @@ public class RNSerialportModule extends ReactContextBaseJavaModule implements Li
       map.putString("name", d.getDeviceName());
       map.putInt("vendorId", d.getVendorId());
       map.putInt("productId", d.getProductId());
+      map.putString("manufacturerName", d.getManufacturerName());
+      map.putString("productName", d.getProductName());
 
       deviceList.pushMap(map);
     }
@@ -737,7 +739,7 @@ public class RNSerialportModule extends ReactContextBaseJavaModule implements Li
   private void requestUserPermission(UsbDevice device) {
     if(device == null)
       return;
-    PendingIntent mPendingIntent = PendingIntent.getBroadcast(mReactContext, 0 , new Intent(ACTION_USB_PERMISSION), 0);
+    PendingIntent mPendingIntent = PendingIntent.getBroadcast(mReactContext, 0 , new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE);
     usbManager.requestPermission(device, mPendingIntent);
   }
 
